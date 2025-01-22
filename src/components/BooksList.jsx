@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchBooks, deleteBook } from '../features/BookSlice';
-import {Trash, Pencil, Plus} from 'lucide-react';
-import {useNavigate} from 'react-router-dom';
+import { Trash, Pencil, Plus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 function BooksList() {
   const { Books, status } = useSelector((state) => state.Books);
@@ -10,7 +10,7 @@ function BooksList() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (status === 'idle') { 
+    if (status === 'idle') {
       dispatch(fetchBooks());
     }
   }, [dispatch, status]);
@@ -24,51 +24,63 @@ function BooksList() {
   }
 
   const removeBook = (id) => {
-    dispatch(deleteBook(id))
-  }
+    dispatch(deleteBook(id));
+  };
 
-  const updateBook  = (id) => {
-    navigate(`/AddEditForm/:${id}`);
-  }
+  const updateBook = (id) => {
+    navigate(`/AddEditForm/${id}`); // Corrected navigation path
+  };
 
   return (
     <div>
-     <div className='m-3 p-2 d-flex justify-content-between'>
+      <div className="m-3 p-2 d-flex justify-content-between">
         <h1>Books List</h1>
-        <button className='btn btn-primary' onClick={() =>navigate('/AddEditForm')}><Plus/> Add book</button>
-     </div>
-      <table className='table table-striped '>
+        <button className="btn btn-primary" onClick={() => navigate('/AddEditForm')}>
+          <Plus /> Add book
+        </button>
+      </div>
+      <table className="table table-striped">
         <thead>
-            <tr>
-                <th>id Book</th>
-                <th>Title</th>
-                <th>Author</th>
-                <th>Description</th>
-                <th>Image</th>
-                <th>Actions</th>
-            </tr>
+          <tr>
+            <th>id Book</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Description</th>
+            <th>Image</th>
+            <th>Actions</th>
+          </tr>
         </thead>
         <tbody>
-            {Array.isArray(Books) && Books.length > 0 ? (
-                Books.map((book) => (
-                    <tr key={book.id}>
-                        <td>{book.id}</td>
-                        <td>{book.title}</td>
-                        <td>{book.author}</td>
-                        <td>{book.description.slice(0,30)}</td>
-                        <td><img src={book.image} alt="not found" width={100}/></td>
-                        <td>
-                            <Pencil onClick={() => updateBook(book.id)} size={16} color='green' className='mx-2'/>
-                            <Trash onClick={() => removeBook(book.id) } size={16} color='red'/>
-                        </td>
-                    </tr>
-                ))
-                ) : (
-                <li>No books available</li>
-            )}
+          {Array.isArray(Books) && Books.length > 0 ? (
+            Books.map((book) => (
+              <tr key={book.id}>
+                <td>{book.id}</td>
+                <td>{book.title}</td>
+                <td>{book.author}</td>
+                <td>{book.description.slice(0, 30)}</td>
+                <td>
+                  <img
+                    src={book.image || '/path/to/default-image.jpg'} 
+                    alt={book.title}
+                    width={100}
+                    height={100}
+                  />
+                </td>
+                <td>
+                  <Pencil onClick={() => updateBook(book.id)} size={16} color="green" className="mx-2" />
+                  <Trash onClick={() => removeBook(book.id)} size={16} color="red" />
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="6" className="text-center">
+                No books available
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
-     
     </div>
   );
 }
